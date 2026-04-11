@@ -1,0 +1,4 @@
+.xmake
+.idea
+cmake-build-debug
+chroot
