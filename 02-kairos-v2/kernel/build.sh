@@ -1,0 +1,45 @@
+/mnt/kairos/toolchain/bin/x86_64-kairos-elf-gcc -O2 \
+    -c \
+    -I. \
+    -Wall \
+    -Wextra \
+    -Werror \
+    -pipe \
+    -ffreestanding \
+    -nostdlib \
+    -std=gnu99 \
+    -fno-stack-protector \
+	-fno-pic \
+	-mno-80387 \
+	-mno-mmx \
+	-mno-3dnow \
+	-mno-sse \
+	-mno-sse2 \
+	-mno-red-zone \
+	-mcmodel=kernel \
+	-MMD \
+    kernel.c -o kernel.o
+
+/mnt/kairos/toolchain/bin/x86_64-kairos-elf-gcc -O2 \
+    -c \
+    -I. \
+    -Wall \
+    -Wextra \
+    -Werror \
+    -pipe \
+    -ffreestanding \
+    -nostdlib \
+    -std=gnu99 \
+    -fno-stack-protector \
+	-fno-pic \
+	-mno-80387 \
+	-mno-mmx \
+	-mno-3dnow \
+	-mno-sse \
+	-mno-sse2 \
+	-mno-red-zone \
+	-mcmodel=kernel \
+	-MMD \
+    -zmax-page-size=0x1000 \
+    -lgcc \
+    -T./arch/x86_64/linker.ld -o kairos.elf kernel.o
