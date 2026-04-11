@@ -1,0 +1,6 @@
+[submodule "ismenaos-libc"]
+	path = ismenaos-libc
+	url = https://gitlab.com/astraeaos-development/ismenaos-libc.git
+[submodule "third-party/limine"]
+	path = third-party/limine
+	url = https://github.com/limine-bootloader/limine.git
