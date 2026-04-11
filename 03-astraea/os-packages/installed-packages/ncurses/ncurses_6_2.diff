@@ -1,0 +1,7 @@
+168a169
+> 					| astraeaos* \
+191a193,196
+> 			astraeaos)
+> 				basic_machine=i[3-7]86-elf
+> 				os=elf
+> 				;;
