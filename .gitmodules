@@ -1,0 +1,3 @@
+[submodule "voleta-kernel"]
+	path = voleta-kernel
+	url = https://gitlab.com/astraeaos-development/voleta-kernel.git
