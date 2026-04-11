@@ -1,0 +1,142 @@
+     1                                  bits 32
+     2                                  
+     3                                  org 0x08048000
+     4                                  
+     5                                  ehdr:
+     6 00000000 7F454C4601010100                    db 0x7F, "ELF", 1, 1, 1, 0
+     7 00000008 00<rept>                    times 8 db  0
+     8 00000010 0200                                dw  2
+     9 00000012 0300                                dw  3
+    10 00000014 01000000                            dd  1
+    11 00000018 [21010000]                          dd  _start
+    12 0000001C 34000000                            dd  phdr - $$
+    13 00000020 00000000                            dd  0
+    14 00000024 00000000                            dd  0
+    15 00000028 3400                                dw  ehdrsize
+    16 0000002A 2000                                dw  phdrsize
+    17 0000002C 0100                                dw  1
+    18 0000002E 0000                                dw  0
+    19 00000030 0000                                dw  0
+    20 00000032 0000                                dw  0
+    21                                  ehdrsize    equ $ - ehdr
+    22                                  
+    23                                  phdr:
+    24 00000034 01000000                            dd  1
+    25 00000038 00000000                            dd  0
+    26 0000003C [00000000]                          dd  $$
+    27 00000040 [00000000]                          dd  $$
+    28 00000044 54000000                            dd  filesize
+    29 00000048 54000000                            dd  filesize
+    30 0000004C 05000000                            dd  5
+    31 00000050 00100000                            dd  0x1000
+    32                                  phdrsize    equ $ - phdr
+    33                                  
+    34                                  filesize    equ $ - $$
+    35                                  
+    36                                  pos:
+    37 00000054 6854800408                          push    0x08048054
+    38                                  
+    39                                  label:
+    40 00000059 6858800408                          push    0x08048058
+    41                                  
+    42                                  getchar:
+    43 0000005E 6A00                                push    0x0
+    44 00000060 31DB                                xor     ebx, ebx
+    45 00000062 89E1                                mov     ecx, esp
+    46 00000064 89DA                                mov     edx, ebx
+    47 00000066 42                                  inc     edx
+    48 00000067 B803000000                          mov     eax, 0x3
+    49 0000006C CD80                                int     0x80
+    50 0000006E 85C0                                test    eax, eax
+    51 00000070 7402                                je      exit
+    52 00000072 58                                  pop     eax
+    53 00000073 C3                                  ret
+    54                                  
+    55                                  exit:
+    56 00000074 31C0                                xor     eax, eax
+    57 00000076 89C3                                mov     ebx, eax 
+    58 00000078 40                                  inc     eax
+    59 00000079 CD80                                int     0x80
+    60                                  
+    61                                  gethex:
+    62 0000007B E8DEFFFFFF                          call    getchar
+    63 00000080 83F820                              cmp     eax, 0x20
+    64 00000083 7EF6                                jle     gethex
+    65 00000085 83F823                              cmp     eax, 0x23
+    66 00000088 750C                                jne     .l1
+    67                                  
+    68                                  .loop:
+    69 0000008A E8CFFFFFFF                          call    getchar
+    70 0000008F 83F80A                              cmp     eax, 0xa
+    71 00000092 75F6                                jne     .loop
+    72 00000094 EBE5                                jmp     gethex
+    73                                  
+    74                                  .l1:
+    75 00000096 83F82E                              cmp     eax, 0x2e
+    76 00000099 7518                                jne     .l2
+    77 0000009B E8BEFFFFFF                          call    getchar
+    78 000000A0 25FF000000                          and     eax, 0xff
+    79 000000A5 05[59000000]                        add     eax, label
+    80 000000AA BB[54000000]                        mov     ebx, pos
+    81 000000AF 8918                                mov     [eax], ebx
+    82 000000B1 EBC8                                jmp     gethex
+    83                                  
+    84                                  .l2:
+    85 000000B3 83F830                              cmp     eax, 0x30
+    86 000000B6 7C09                                jl      .l3
+    87 000000B8 83F83A                              cmp     eax, 0x3a
+    88 000000BB 7D04                                jge     .l3
+    89 000000BD 83E830                              sub     eax, 0x30
+    90 000000C0 C3                                  ret
+    91                                  
+    92                                  .l3:
+    93 000000C1 83F861                              cmp     eax, 0x61
+    94 000000C4 7C09                                jl      .l4
+    95 000000C6 83F867                              cmp     eax, 0x67
+    96 000000C9 7D04                                jge     .l4
+    97 000000CB 83E857                              sub     eax, 0x57
+    98 000000CE C3                                  ret
+    99                                  
+   100                                  .l4:
+   101 000000CF 25FF000000                          and     eax, 0xff
+   102 000000D4 05[59000000]                        add     eax, label
+   103 000000D9 8B18                                mov     ebx, [eax]
+   104 000000DB B8[54000000]                        mov     eax, pos
+   105 000000E0 83C004                              add     eax, 0x4
+   106 000000E3 B8[54000000]                        mov     eax, pos
+   107 000000E8 29C3                                sub     ebx, eax
+   108 000000EA 89D8                                mov     eax, ebx
+   109 000000EC 50                                  push    eax
+   110 000000ED E81E000000                          call    putchar
+   111 000000F2 58                                  pop     eax
+   112 000000F3 C1F808                              sar     eax, 0x8
+   113 000000F6 50                                  push    eax
+   114 000000F7 E814000000                          call    putchar
+   115 000000FC 58                                  pop     eax
+   116 000000FD C1F810                              sar     eax, 0x10
+   117 00000100 50                                  push    eax
+   118 00000101 C1F818                              sar     eax, 0x18
+   119 00000104 50                                  push    eax
+   120 00000105 E806000000                          call    putchar
+   121 0000010A 58                                  pop     eax
+   122 0000010B E96BFFFFFF                          jmp     gethex
+   123                                  
+   124                                  putchar:
+   125 00000110 31DB                                xor     ebx, ebx
+   126 00000112 43                                  inc     ebx
+   127 00000113 8D4C2404                            lea     ecx, [esp+0x4]
+   128 00000117 89DA                                mov     edx, ebx
+   129 00000119 B804000000                          mov     eax, 0x4
+   130 0000011E CD80                                int     0x80
+   131 00000120 C3                                  ret
+   132                                              
+   133                                  _start:
+   134 00000121 E855FFFFFF                          call    gethex
+   135 00000126 C1E004                              shl     eax, 0x4
+   136 00000129 50                                  push    eax
+   137 0000012A E84CFFFFFF                          call    gethex
+   138 0000012F 010424                              add     [esp*1], eax
+   139                                  ;            inc     0x0
+   140 00000132 E8D9FFFFFF                          call    putchar
+   141 00000137 58                                  pop     eax
+   142 00000138 EBE7                                jmp     _start

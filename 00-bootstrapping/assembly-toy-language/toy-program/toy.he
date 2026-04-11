@@ -1,0 +1,32 @@
+# Elf32_Ehdr
+7f 45 4c 46 01 01 01            # e_ident
+00 00 00 00 00 00 00 00 00
+02 00                           # e_type
+03 00                           # e_machine
+01 00 00 00                     # e_version
+54 90 04 08                     # e_entry = 0x08049000 + len(ehdr) + len(phdr)
+34 00 00 00                     # e_phoff = len(ehdr)
+00 00 00 00                     # e_shoff
+00 00 00 00                     # e_flags
+34 00                           # e_ehsize = len(ehdr)
+20 00                           # e_phentsize = len(phdr)
+01 00                           # e_phnum
+00 00                           # e_shentsize
+00 00                           # e_shnum
+00 00                           # e_shstrndx
+
+# Elf32_Phdr
+01 00 00 00                     # p_type
+00 00 00 00                     # p_offset
+00 90 04 08                     # p_vaddr = 0x08049000
+00 90 04 08                     # p_paddr = 0x08049000
+54 00 00 00                     # p_filesz = len(ehdr) + len(phdr) + len(prog)
+54 00 00 00                     # p_memsz = len(ehdr) + len(phdr) + len(prog)
+05 00 00 00                     # p_flags
+00 10 00 00                     # p_align
+
+# _start:
+b3 2a                           # mov bl, 42
+31 c0                           # xor eax, eax
+40                              # inc eax
+cd 80                           # int 0x80

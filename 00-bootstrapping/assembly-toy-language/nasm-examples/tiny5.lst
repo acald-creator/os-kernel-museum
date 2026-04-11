@@ -1,0 +1,8 @@
+     1                                  bits 32
+     2                                  global _start
+     3                                  section .text
+     4                                  _start:
+     5 00000000 31C0                        xor eax, eax
+     6 00000002 40                          inc eax
+     7 00000003 B32A                        mov bl, 42
+     8 00000005 CD80                        int 0x80
